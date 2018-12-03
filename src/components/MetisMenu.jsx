@@ -45,6 +45,8 @@ class MetisMenu extends React.Component {
     }
 
     this.LinkComponent = props.LinkComponent;
+    this.renderItem = props.renderItem;
+    this.menuHeader = props.menuHeader;
 
     if (props.content) {
       this.updateContent(props.content);
@@ -99,6 +101,7 @@ class MetisMenu extends React.Component {
       iconNamePrefix: props.iconNamePrefix,
       iconNameStateHidden: props.iconNameStateHidden,
       iconNameStateVisible: props.iconNameStateVisible,
+	    menuHeight: props.menuHeight
     };
   }
 
@@ -106,6 +109,7 @@ class MetisMenu extends React.Component {
     return {
       classStore: this.classStore,
       LinkComponent: this.LinkComponent,
+	    renderItem: this.renderItem
     };
   }
 
@@ -171,10 +175,13 @@ class MetisMenu extends React.Component {
 
   render() {
     const mainWrapper = (
-      <div className={this.classStore.classMainWrapper}>
+      <div
+        className={this.classStore.classMainWrapper}
+        style={this.classStore.menuHeight ? {'maxHeight': this.classStore.menuHeight}:{}}>
         <Container
           reduxStoreName={this.reduxStoreName}
           reduxUid={this.reduxUid}
+          menuHeader={this.menuHeader}
         />
       </div>
     );
@@ -218,6 +225,8 @@ MetisMenu.defaultProps = {
   onSelected: null,
   useExternalReduxStore: null,
   reduxStoreName: 'metisMenuStore',
+  renderItem: null,
+	menuHeight: null
 };
 
 MetisMenu.propTypes = {
@@ -231,6 +240,10 @@ MetisMenu.propTypes = {
     PropTypes.element,
     PropTypes.func,
   ]),
+	menuHeader: PropTypes.oneOfType([
+		PropTypes.element,
+		PropTypes.func,
+	]),
 
   noBuiltInClassNames: PropTypes.bool,
   className: PropTypes.string,
@@ -263,6 +276,8 @@ MetisMenu.propTypes = {
   onSelected: PropTypes.func,
   useExternalReduxStore: PropTypes.object,
   reduxStoreName: PropTypes.string,
+	renderItem: PropTypes.func,
+	menuHeight: PropTypes.number
 };
 
 MetisMenu.childContextTypes = {
@@ -271,6 +286,8 @@ MetisMenu.childContextTypes = {
     PropTypes.element,
     PropTypes.func,
   ]).isRequired,
+	renderItem: PropTypes.func,
+	menuHeight: PropTypes.number
 };
 
 export default MetisMenu;

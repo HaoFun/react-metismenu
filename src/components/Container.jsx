@@ -15,6 +15,7 @@ const Container = ({
   itemId,
   reduxStoreName,
   reduxUid,
+	menuHeader: MenuHeader
 }, {
   classStore,
 }) => (
@@ -26,6 +27,7 @@ const Container = ({
       visible && classStore.classContainerVisible,
     )}
   >
+    {MenuHeader ? <MenuHeader /> : null}
     {items.map((item, i) => (
       <Item key={item.id || `_${i}`} reduxStoreName={reduxStoreName} reduxUid={reduxUid} {...item} />
     ))}
@@ -35,12 +37,17 @@ const Container = ({
 Container.defaultProps = {
   itemId: null,
   visible: false,
+	menuHeader: null
 };
 
 Container.propTypes = {
   itemId: PropTypes.oneOfType([
     PropTypes.number,
     PropTypes.string,
+  ]),
+	menuHeader: PropTypes.oneOfType([
+	  PropTypes.element,
+	  PropTypes.func,
   ]),
   items: PropTypes.arrayOf(PropTypes.object).isRequired,
   visible: PropTypes.bool,

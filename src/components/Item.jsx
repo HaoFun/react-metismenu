@@ -26,6 +26,7 @@ const Item = ({
 }, {
   classStore,
   LinkComponent,
+	renderItem,
 }) => (
   <li
     className={classnames(
@@ -50,7 +51,7 @@ const Item = ({
       activateMe={activateMe}
     >
       <i className={classnames(classStore.classIcon, classStore.iconNamePrefix + icon)} />
-      {label}
+	    {renderItem ? renderItem(label) : label}
       {hasSubMenu && <i
         className={classnames(
           classStore.classStateIcon,
@@ -108,6 +109,7 @@ Item.contextTypes = {
     PropTypes.element,
     PropTypes.func,
   ]).isRequired,
+	renderItem: PropTypes.func
 };
 
 export default Item;

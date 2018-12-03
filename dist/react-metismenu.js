@@ -1898,6 +1898,8 @@ var MetisMenu = function (_React$Component) {
     }
 
     _this.LinkComponent = props.LinkComponent;
+    _this.renderItem = props.renderItem;
+    _this.menuHeader = props.menuHeader;
 
     if (props.content) {
       _this.updateContent(props.content);
@@ -1922,7 +1924,8 @@ var MetisMenu = function (_React$Component) {
 
       iconNamePrefix: props.iconNamePrefix,
       iconNameStateHidden: props.iconNameStateHidden,
-      iconNameStateVisible: props.iconNameStateVisible
+      iconNameStateVisible: props.iconNameStateVisible,
+      menuHeight: props.menuHeight
     };
     return _this;
   }
@@ -1932,7 +1935,8 @@ var MetisMenu = function (_React$Component) {
     value: function getChildContext() {
       return {
         classStore: this.classStore,
-        LinkComponent: this.LinkComponent
+        LinkComponent: this.LinkComponent,
+        renderItem: this.renderItem
       };
     }
   }, {
@@ -2003,10 +2007,13 @@ var MetisMenu = function (_React$Component) {
     value: function render() {
       var mainWrapper = _react2.default.createElement(
         'div',
-        { className: this.classStore.classMainWrapper },
+        {
+          className: this.classStore.classMainWrapper,
+          style: this.classStore.menuHeight ? { 'maxHeight': this.classStore.menuHeight } : {} },
         _react2.default.createElement(_Container2.default, {
           reduxStoreName: this.reduxStoreName,
-          reduxUid: this.reduxUid
+          reduxUid: this.reduxUid,
+          menuHeader: this.menuHeader
         })
       );
 
@@ -2051,7 +2058,9 @@ MetisMenu.defaultProps = {
   activeLinkFromLocation: false,
   onSelected: null,
   useExternalReduxStore: null,
-  reduxStoreName: 'metisMenuStore'
+  reduxStoreName: 'metisMenuStore',
+  renderItem: null,
+  menuHeight: null
 };
 
 MetisMenu.propTypes = {
@@ -2059,6 +2068,7 @@ MetisMenu.propTypes = {
   ajax: _propTypes2.default.oneOfType([_propTypes2.default.object, _propTypes2.default.string]),
 
   LinkComponent: _propTypes2.default.oneOfType([_propTypes2.default.element, _propTypes2.default.func]),
+  menuHeader: _propTypes2.default.oneOfType([_propTypes2.default.element, _propTypes2.default.func]),
 
   noBuiltInClassNames: _propTypes2.default.bool,
   className: _propTypes2.default.string,
@@ -2084,12 +2094,16 @@ MetisMenu.propTypes = {
 
   onSelected: _propTypes2.default.func,
   useExternalReduxStore: _propTypes2.default.object,
-  reduxStoreName: _propTypes2.default.string
+  reduxStoreName: _propTypes2.default.string,
+  renderItem: _propTypes2.default.func,
+  menuHeight: _propTypes2.default.number
 };
 
 MetisMenu.childContextTypes = {
   classStore: _propTypes2.default.object.isRequired,
-  LinkComponent: _propTypes2.default.oneOfType([_propTypes2.default.element, _propTypes2.default.func]).isRequired
+  LinkComponent: _propTypes2.default.oneOfType([_propTypes2.default.element, _propTypes2.default.func]).isRequired,
+  renderItem: _propTypes2.default.func,
+  menuHeight: _propTypes2.default.number
 };
 
 exports.default = MetisMenu;
@@ -4905,13 +4919,15 @@ var Container = function Container(_ref, _ref2) {
       visible = _ref.visible,
       itemId = _ref.itemId,
       reduxStoreName = _ref.reduxStoreName,
-      reduxUid = _ref.reduxUid;
+      reduxUid = _ref.reduxUid,
+      MenuHeader = _ref.menuHeader;
   var classStore = _ref2.classStore;
   return _react2.default.createElement(
     'ul',
     {
       className: (0, _classnames2.default)(typeof classStore.classContainer === 'function' ? classStore.classContainer({ itemId: itemId, visible: visible, items: items }) : classStore.classContainer, visible && classStore.classContainerVisible)
     },
+    MenuHeader ? _react2.default.createElement(MenuHeader, null) : null,
     items.map(function (item, i) {
       return _react2.default.createElement(_Item2.default, _extends({ key: item.id || '_' + i, reduxStoreName: reduxStoreName, reduxUid: reduxUid }, item));
     })
@@ -4920,11 +4936,13 @@ var Container = function Container(_ref, _ref2) {
 
 Container.defaultProps = {
   itemId: null,
-  visible: false
+  visible: false,
+  menuHeader: null
 };
 
 Container.propTypes = {
   itemId: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.string]),
+  menuHeader: _propTypes2.default.oneOfType([_propTypes2.default.element, _propTypes2.default.func]),
   items: _propTypes2.default.arrayOf(_propTypes2.default.object).isRequired,
   visible: _propTypes2.default.bool,
   reduxStoreName: _propTypes2.default.string.isRequired,
@@ -5035,7 +5053,8 @@ var Item = function Item(_ref, _ref2) {
       reduxStoreName = _ref.reduxStoreName,
       reduxUid = _ref.reduxUid;
   var classStore = _ref2.classStore,
-      LinkComponent = _ref2.LinkComponent;
+      LinkComponent = _ref2.LinkComponent,
+      renderItem = _ref2.renderItem;
   return _react2.default.createElement(
     'li',
     {
@@ -5058,7 +5077,7 @@ var Item = function Item(_ref, _ref2) {
         activateMe: activateMe
       },
       _react2.default.createElement('i', { className: (0, _classnames2.default)(classStore.classIcon, classStore.iconNamePrefix + icon) }),
-      label,
+      renderItem ? renderItem(label) : label,
       hasSubMenu && _react2.default.createElement('i', {
         className: (0, _classnames2.default)(classStore.classStateIcon, classStore.iconNamePrefix + (subMenuVisibility ? classStore.iconNameStateVisible : classStore.iconNameStateHidden))
       })
@@ -5098,7 +5117,8 @@ Item.propTypes = {
 
 Item.contextTypes = {
   classStore: _propTypes2.default.object.isRequired,
-  LinkComponent: _propTypes2.default.oneOfType([_propTypes2.default.element, _propTypes2.default.func]).isRequired
+  LinkComponent: _propTypes2.default.oneOfType([_propTypes2.default.element, _propTypes2.default.func]).isRequired,
+  renderItem: _propTypes2.default.func
 };
 
 exports.default = Item;
